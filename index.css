@@ -6,6 +6,7 @@
 .flashcard {
   perspective: 1000px;
 }
+
 .flashcard-inner {
   position: relative;
   width: 100%;
@@ -14,9 +15,11 @@
   transition: transform 0.6s;
   transform-style: preserve-3d;
 }
+
 .flashcard.flipped .flashcard-inner {
   transform: rotateY(180deg);
 }
+
 .flashcard-front,
 .flashcard-back {
   position: absolute;
@@ -30,6 +33,7 @@
   word-wrap: break-word;
   white-space: normal;
 }
+
 .flashcard-back {
   transform: rotateY(180deg);
 }
