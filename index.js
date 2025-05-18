@@ -11,12 +11,12 @@ import {
 import { createClient } from '@supabase/supabase-js';
 import './index.css';
 
-// Supabase inicializálása a környezeti változók alapján
+// Supabase inicializálása a .env-ben lévő változókkal
 const SUPABASE_URL = process.env.REACT_APP_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.REACT_APP_SUPABASE_ANON_KEY;
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// Bejelentkezés komponens
+// --- BEJELENTKEZÉS KOMPOZÁCIÓ ---
 function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -68,7 +68,7 @@ function Login() {
   );
 }
 
-// Regisztráció komponens
+// --- REGISZTRÁCIÓ KOMPOZÁCIÓ ---
 function Register() {
   const navigate = useNavigate();
   const [fullName, setFullName] = useState('');
@@ -92,9 +92,7 @@ function Register() {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: { full_name: fullName }
-      }
+      options: { data: { full_name: fullName } }
     });
     if (error) {
       alert(error.message);
@@ -166,7 +164,8 @@ function Register() {
   );
 }
 
-// Dashboard komponens – itt jelennek meg az aktuális felhasználó témái, és itt lehet új téma hozzáadása.
+// --- DASHBOARD KOMPOZÁCIÓ ---
+// Itt a felhasználó témáit listázzuk, új téma hozzáadására van lehetőség, és kijelentkezés is megoldott.
 function Dashboard() {
   const navigate = useNavigate();
   const [topics, setTopics] = useState([]);
@@ -177,7 +176,6 @@ function Dashboard() {
   }, []);
 
   const fetchTopics = async () => {
-    // A bejelentkezett felhasználó adatai a Supabase auth API segítségével
     const {
       data: { user }
     } = await supabase.auth.getUser();
@@ -254,7 +252,8 @@ function Dashboard() {
   );
 }
 
-// TopicView komponens – itt látod az adott téma adatait, és itt lehet flashkártyákat hozzáadni és megtekinteni.
+// --- TOPICVIEW KOMPOZÁCIÓ ---
+// Az adott téma részleteit, flashkártyáit itt kezeljük.
 function TopicView() {
   const { topicId } = useParams();
   const navigate = useNavigate();
@@ -346,7 +345,8 @@ function TopicView() {
   );
 }
 
-// Flashcard komponens – flip animációval jeleníti meg a kártya kérdését és válaszát.
+// --- FLASHCARD KOMPOZÁCIÓ ---
+// Flashcard komponens flip animációval mutatja a kérdést és választ.
 function Flashcard({ card }) {
   const [flipped, setFlipped] = useState(false);
   return (
@@ -363,17 +363,18 @@ function Flashcard({ card }) {
   );
 }
 
-// Az alkalmazás fő komponense: a Supabase authentikációt figyeli, és a React Router segítségével váltogatja a nézeteket.
+// --- ALKALMAZÁS FŐ KOMPOZÍCIÓ ---
+// A Supabase autentikációs állapotát figyeli és a React Router segítségével rendereli a megfelelő nézetet.
 function App() {
   const [session, setSession] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Aktuális session lekérése
+    // Lekérjük az aktuális session-t
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
     });
-    // Auth állapotváltozás figyelése
+    // Feliratkozás az auth állapot változására
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
     });
